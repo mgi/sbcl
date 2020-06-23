@@ -27,7 +27,6 @@ typedef size_t os_vm_size_t;
 #else
 typedef vm_size_t os_vm_size_t;
 #endif
-typedef off_t os_vm_offset_t;
 typedef int os_vm_prot_t;
 
 #if defined(LISP_FEATURE_FREEBSD)

@@ -232,7 +232,7 @@ gc_managed_heap_space_p(lispobj addr)
 
 /* Remap a part of an already existing memory mapping from a file,
  * and/or create a new mapping as need be */
-void* load_core_bytes(int fd, os_vm_offset_t offset, os_vm_address_t addr, os_vm_size_t len)
+void* load_core_bytes(int fd, int64_t offset, os_vm_address_t addr, os_vm_size_t len)
 {
     int fail = 0;
 #ifdef LISP_FEATURE_HPUX
@@ -262,7 +262,7 @@ void* load_core_bytes(int fd, os_vm_offset_t offset, os_vm_address_t addr, os_vm
     }
 #endif
     if (fail)
-        lose("load_core_bytes(%d,%zx,%p,%zx) failed", fd, offset, addr, len);
+        lose("load_core_bytes(%d,%llx,%p,%zx) failed", fd, offset, addr, len);
     return (void*)actual;
 }
 

@@ -156,7 +156,7 @@ typedef long ftell_type;
 #endif
 
 static long write_bytes(FILE *file, char *addr, size_t bytes,
-                        os_vm_offset_t file_offset, int compression)
+                        int64_t file_offset, int compression)
 {
     ftell_type here, data;
 
@@ -180,7 +180,7 @@ static long write_bytes(FILE *file, char *addr, size_t bytes,
 
 static void
 output_space(FILE *file, int id, lispobj *addr, lispobj *end,
-             os_vm_offset_t file_offset,
+             int64_t file_offset,
              int core_compression_level)
 {
     size_t words, bytes, data, compressed_flag;
@@ -274,7 +274,7 @@ save_to_filehandle(FILE *file, char *filename, lispobj init_function,
         fflush(stdout);
     }
 
-    os_vm_offset_t core_start_pos = FTELL(file);
+    int64_t core_start_pos = FTELL(file);
     write_lispobj(CORE_MAGIC, file);
 
     /* If 'save_runtime_options' is specified then the saved thread stack size
@@ -371,7 +371,7 @@ save_to_filehandle(FILE *file, char *filename, lispobj init_function,
      * prepended to it. */
     fseek(file, 0, SEEK_END);
 
-    if (1 != fwrite(&core_start_pos, sizeof(os_vm_offset_t), 1, file)) {
+    if (1 != fwrite(&core_start_pos, sizeof(int64_t), 1, file)) {
         perror("Error writing core starting position to file");
         fclose(file);
     } else {
@@ -417,7 +417,7 @@ load_runtime(char *runtime_path, size_t *size_out)
     void *buf = NULL;
     FILE *input = NULL;
     size_t size, count;
-    os_vm_offset_t core_offset;
+    int64_t core_offset;
 
     core_offset = search_for_embedded_core (runtime_path, 0);
     if ((input = fopen(runtime_path, "rb")) == NULL) {

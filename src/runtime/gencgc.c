@@ -4554,7 +4554,7 @@ gc_and_save(char *filename, boolean prepend_runtime,
 /* Read corefile ptes from 'fd' which has already been positioned
  * and store into the page table */
 void gc_load_corefile_ptes(core_entry_elt_t n_ptes, core_entry_elt_t total_bytes,
-                           os_vm_offset_t offset, int fd)
+                           int64_t offset, int fd)
 {
     compute_layout_of_layout();
     gc_assert(ALIGN_UP(n_ptes * sizeof (struct corefile_pte), N_WORD_BYTES)

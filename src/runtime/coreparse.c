@@ -99,19 +99,18 @@ int lisp_code_in_elf() { return &lisp_code_start != 0; }
 
 /* Search 'filename' for an embedded core.  An SBCL core has, at the
  * end of the file, a trailer containing optional saved runtime
- * options, the start of the core (an os_vm_offset_t), and a final
- * signature word (the lispobj CORE_MAGIC).  If this trailer is found
- * at the end of the file, the start of the core can be determined
- * from the core size.
+ * options, the start of the core, and a final signature word (the
+ * lispobj CORE_MAGIC).  If this trailer is found at the end of the
+ * file, the start of the core can be determined from the core size.
  *
  * If an embedded core is present, this returns the offset into the
  * file to load the core from, or -1 if no core is present. */
-os_vm_offset_t
+int64_t
 search_for_embedded_core(char *filename, struct memsize_options *memsize_options)
 {
-    extern os_vm_offset_t search_for_elf_core(int);
+    extern int64_t search_for_elf_core(int);
     lispobj header = 0;
-    os_vm_offset_t lispobj_size = sizeof(lispobj);
+    int64_t lispobj_size = sizeof(lispobj);
     int fd;
 
     if ((fd = open_binary(filename, O_RDONLY)) < 0)
@@ -125,15 +124,15 @@ search_for_embedded_core(char *filename, struct memsize_options *memsize_options
         return 0;
     }
 
-    os_vm_offset_t core_start = -1; // invalid value
+    int64_t core_start = -1; // invalid value
     if (lseek(fd, -lispobj_size, SEEK_END) < 0 ||
         read(fd, &header, (size_t)lispobj_size) != lispobj_size)
         goto lose;
 
     if (header == CORE_MAGIC) {
         // the last word in the file could be CORE_MAGIC by pure coincidence
-        if (lseek(fd, -(lispobj_size + sizeof(os_vm_offset_t)), SEEK_END) < 0 ||
-            read(fd, &core_start, sizeof(os_vm_offset_t)) != sizeof(os_vm_offset_t))
+        if (lseek(fd, -(lispobj_size + sizeof(int64_t)), SEEK_END) < 0 ||
+            read(fd, &core_start, sizeof(int64_t)) != sizeof(int64_t))
             goto lose;
         if (lseek(fd, core_start, SEEK_SET) != core_start ||
             read(fd, &header, lispobj_size) != lispobj_size || header != CORE_MAGIC)
@@ -173,7 +172,7 @@ lose:
     lose("This runtime was not built with zlib-compressed core support... aborting")
 #else
 # define ZLIB_BUFFER_SIZE (1u<<16)
-static void inflate_core_bytes(int fd, os_vm_offset_t offset,
+static void inflate_core_bytes(int fd, int64_t offset,
                                os_vm_address_t addr, int len)
 {
     z_stream stream;
@@ -697,7 +696,7 @@ void calc_immobile_space_bounds()
 
 static void
 process_directory(int count, struct ndir_entry *entry,
-                  int fd, os_vm_offset_t file_offset,
+                  int fd, int64_t file_offset,
                   int __attribute__((unused)) merge_core_pages,
                   struct heap_adjust __attribute__((unused)) *adj)
 {
@@ -969,7 +968,7 @@ process_directory(int count, struct ndir_entry *entry,
 
 #ifdef LISP_FEATURE_GENCGC
 extern void gc_load_corefile_ptes(core_entry_elt_t, core_entry_elt_t,
-                                  os_vm_offset_t offset, int fd);
+                                  int64_t offset, int fd);
 #else
 #define gc_load_corefile_ptes(dummy1,dummy2,dummy3,dummy4)
 #endif
@@ -983,7 +982,7 @@ static void sanity_check_loaded_core(lispobj);
  * -1: default, yes for compressed cores, no otherwise.
  */
 lispobj
-load_core_file(char *file, os_vm_offset_t file_offset, int merge_core_pages)
+load_core_file(char *file, int64_t file_offset, int merge_core_pages)
 {
     void *header;
     core_entry_elt_t val, *ptr;

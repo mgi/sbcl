@@ -21,7 +21,6 @@
 /* FIXME: Stolen from CMUCL. Investigate. */
 typedef char* os_vm_address_t;
 typedef size_t os_vm_size_t;
-typedef off_t os_vm_offset_t;
 typedef int os_vm_prot_t;
 
 /* typedef struct ucontext os_context_t;*/

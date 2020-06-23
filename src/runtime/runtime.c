@@ -428,7 +428,7 @@ sbcl_main(int argc, char *argv[], char *envp[])
      * a malloc'ed string which should be freed eventually. */
     char *core = 0;
     char **sbcl_argv = 0;
-    os_vm_offset_t embedded_core_offset = 0;
+    int64_t embedded_core_offset = 0;
 
     /* other command line options */
     boolean end_runtime_options = 0;
@@ -465,7 +465,7 @@ sbcl_main(int argc, char *argv[], char *envp[])
         sbcl_runtime_home = libpath;
 
     if (sbcl_runtime) {
-        os_vm_offset_t offset = search_for_embedded_core(sbcl_runtime, &memsize_options);
+        int64_t offset = search_for_embedded_core(sbcl_runtime, &memsize_options);
         if (offset != -1) {
             embedded_core_offset = offset;
             core = sbcl_runtime;
@@ -667,7 +667,7 @@ sbcl_main(int argc, char *argv[], char *envp[])
          * before we reach this block, so that there is no observable
          * difference between "embedded" and "bare" images given to
          * --core. */
-        os_vm_offset_t offset = search_for_embedded_core(core, 0);
+        int64_t offset = search_for_embedded_core(core, 0);
         if (offset != -1)
             embedded_core_offset = offset;
     }

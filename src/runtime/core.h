@@ -42,9 +42,9 @@ struct memsize_options {
     int present_in_core;
 };
 
-extern lispobj load_core_file(char *file, os_vm_offset_t file_offset,
+extern lispobj load_core_file(char *file, int64_t file_offset,
                               int merge_core_pages);
-extern os_vm_offset_t search_for_embedded_core(char *filename,
+extern int64_t search_for_embedded_core(char *filename,
                                                struct memsize_options *memsize_options);
 
 /* arbitrary string identifying this build, embedded in .core files to

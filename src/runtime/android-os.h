@@ -25,7 +25,6 @@
 // Needs to be defined before including target-arch.h
 typedef caddr_t os_vm_address_t;
 typedef size_t os_vm_size_t;
-typedef off_t os_vm_offset_t;
 typedef int os_vm_prot_t;
 
 #include "target-arch-os.h"

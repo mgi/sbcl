@@ -40,7 +40,6 @@ typedef int sigset_t;
 
 typedef LPVOID os_vm_address_t;
 typedef uword_t os_vm_size_t;
-typedef intptr_t os_vm_offset_t;
 typedef int os_vm_prot_t;
 
 /* These are used as bitfields, but Win32 doesn't work that way, so we do a translation. */
