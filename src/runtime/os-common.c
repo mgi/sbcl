@@ -262,7 +262,7 @@ void* load_core_bytes(int fd, int64_t offset, os_vm_address_t addr, os_vm_size_t
     }
 #endif
     if (fail)
-        lose("load_core_bytes(%d,%llx,%p,%zx) failed", fd, offset, addr, len);
+        lose("load_core_bytes(%d,%" PRId64 ",%p,%zx) failed", fd, offset, addr, len);
     return (void*)actual;
 }
 
