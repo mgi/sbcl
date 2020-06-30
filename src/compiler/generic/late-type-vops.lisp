@@ -106,7 +106,8 @@
 
 (define-type-vop complex-double-float-p (complex-double-float-widetag))
 
-(define-type-vop single-float-p (single-float-widetag))
+(define-type-vop single-float-p (single-float-widetag)
+   #+x86-64 simple-type-predicate)
 
 (define-type-vop double-float-p (double-float-widetag))
 
@@ -133,7 +134,8 @@
                *specialized-array-element-type-properties*))))
   (def)) ; simple-rank-1-array-*-p
 
-(define-type-vop characterp (character-widetag))
+(define-type-vop characterp (character-widetag)
+  #+x86-64 simple-type-predicate)
 
 (define-type-vop system-area-pointer-p (sap-widetag))
 
@@ -255,8 +257,8 @@
 #+sb-simd-pack-256
 (define-type-vop simd-pack-256-p (simd-pack-256-widetag))
 
-#.(when (> unbound-marker-widetag lowtag-mask)
-    '(define-type-vop unbound-marker-p (unbound-marker-widetag)))
+(define-type-vop unbound-marker-p (unbound-marker-widetag)
+  #+x86-64 simple-type-predicate)
 
 ;;; Not type vops, but generic over all backends
 (macrolet ((def (name lowtag)
