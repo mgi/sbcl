@@ -1268,7 +1268,7 @@ static inline boolean stable_eql_hash_p(lispobj obj)
 
 static void scan_nonweak_kv_vector(struct vector *kv_vector, void (*scav_entry)(lispobj*))
 {
-    lispobj* data = kv_vector->data;
+    lispobj* data = (lispobj*) kv_vector->data;
 
     if (!is_vector_subtype(kv_vector->header, VectorAddrHashing)) {
         // All keys were hashed address-insensitively
